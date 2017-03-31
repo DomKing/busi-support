@@ -1,4 +1,4 @@
-package org.prcode.busi.support.basic.config.database;
+package org.prcode.business.support.basic.config.database;
 
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;

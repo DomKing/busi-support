@@ -1,4 +1,4 @@
-package org.prcode.busi.support.basic.config.exceptionHandler;
+package org.prcode.business.support.basic.config.exceptionHandler;
 
 import com.alibaba.fastjson.JSON;
 import org.apache.log4j.Logger;

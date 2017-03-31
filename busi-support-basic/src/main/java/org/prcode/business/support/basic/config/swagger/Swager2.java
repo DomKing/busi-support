@@ -1,4 +1,4 @@
-package org.prcode.busi.support.basic.config.swagger;
+package org.prcode.business.support.basic.config.swagger;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

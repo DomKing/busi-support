@@ -1,4 +1,4 @@
-package org.prcode.busi.support.basic.util;
+package org.prcode.business.support.basic.util;
 
 import org.prcode.utility.exception.ValidateException;
 import org.springframework.validation.BindingResult;

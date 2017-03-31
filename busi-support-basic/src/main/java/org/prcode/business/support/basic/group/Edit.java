@@ -1,4 +1,4 @@
-package org.prcode.busi.support.basic.group;
+package org.prcode.business.support.basic.group;
 
 /**
  * @ClassName: Edit

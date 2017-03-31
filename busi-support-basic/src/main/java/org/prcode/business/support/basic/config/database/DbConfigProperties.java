@@ -1,4 +1,4 @@
-package org.prcode.busi.support.basic.config.database;
+package org.prcode.business.support.basic.config.database;
 
 import org.prcode.utility.util.PropertyDESUtil;
 import org.prcode.utility.util.exception.DESException;
