@@ -5,4 +5,8 @@
     <select id="getSysParamValue" resultType="string" parameterType="string">
         select f_sys_para_value from t_comm_sys_para where f_sys_para_code = #{param} and f_sys0_del_state = 0
     </select>
+
+    <update id="updSysParamValue" parameterType="map">
+        update t_comm_sys_para set f_sys_para_value = #{value} where f_sys_para_code = #{param} and f_sys0_del_state = 0
+    </update>
 </mapper>

@@ -4,7 +4,8 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.apache.log4j.Logger;
-import org.prcode.business.support.basic.dao.BusiSupportBasicCacheDao;
+import org.prcode.business.support.basic.busiSupportCache.constant.OmsCommSysParaCode;
+import org.prcode.business.support.basic.busiSupportCache.service.IBusiSupportCacheService;
 import org.prcode.utility.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -41,13 +42,13 @@ public class SimpleMailSender {
     private Configuration configuration;
 
     @Resource
-    private BusiSupportBasicCacheDao busiSupportBasicCacheDao;
+    private IBusiSupportCacheService busiSupportCacheService;
 
     /**
      * 异步发送邮件
      *
      * @param subject      主题
-     * @param sendToMails  发送人员列表
+     * @param sendToMails  发送人员列表 没有则不发
      * @param copyToMails  抄送人员列表
      * @param templateName freeMarker 模版位置 如：mail/demo.ftl
      * @param param        模版参数
@@ -59,12 +60,19 @@ public class SimpleMailSender {
                                  String templateName,
                                  HashMap param) throws BusinessException {
 
+        //没收件人，则不发邮件
         if (sendToMails == null || sendToMails.size() == 0) {
             return;
         }
 
-        String ss = busiSupportBasicCacheDao.getSysParamValue("doorKeyPic");
+        //如果没开启邮件发送，则不发邮件
+        String emailSwitch = busiSupportCacheService.getOmsCommSysParaValue(OmsCommSysParaCode.Email_Switch);
+        if (!"1".equals(emailSwitch)) {
+            return;
+        }
+
         logger.debug("发送邮件开始......");
+
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = null;
         try {
@@ -78,13 +86,12 @@ public class SimpleMailSender {
             }
 
             //转模版
-//            Template template = configuration.getTemplate(templateName);
             Template template = configuration.getTemplate(templateName);
             String text = FreeMarkerTemplateUtils.processTemplateIntoString(template, param);
             helper.setText(text, true);
 
             logger.debug("发送邮件进行中......");
-//            mailSender.send(mimeMessage);
+            mailSender.send(mimeMessage);
         } catch (MessagingException e) {
             logger.error("邮件发送初始化失败：" + e.getMessage());
         } catch (IOException e) {
