@@ -6,6 +6,8 @@ import org.prcode.utility.basic.CharsetConstant;
 import org.prcode.utility.basic.JsonResponse;
 import org.prcode.utility.basic.support.ResponseStatus;
 import org.prcode.utility.exception.BusinessException;
+import org.prcode.utility.exception.LoginTimeout;
+import org.prcode.utility.exception.NoPrivilegeException;
 import org.prcode.utility.exception.ValidateException;
 import org.prcode.utility.util.StringUtil;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -41,6 +43,12 @@ public class GlobalExceptionHandler {
         } else if (e instanceof ValidateException) {
             json.setStatus(ResponseStatus.VALIDATE_ERR);
             json.setMessage(e.getMessage());
+        } else if (e instanceof LoginTimeout) {
+            json.setStatus(ResponseStatus.LOGIN_TIME_OUT);
+            json.setMessage(e.getMessage());
+        } else if (e instanceof NoPrivilegeException) {
+            json.setStatus(ResponseStatus.NO_PRIVILEGE);
+            json.setMessage(e.getMessage());
         } else {
             json.setStatus(ResponseStatus.SYSTEM_ERR);
             json.setMessage(DEFAULT_EXCEPTION_MESSAGE);
@@ -61,7 +69,7 @@ public class GlobalExceptionHandler {
     private void returnJsonData(HttpServletResponse response, JsonResponse json) {
         Writer writer = null;
         try {
-            response.setCharacterEncoding(CharsetConstant.UTF_8_STR);
+            response.setCharacterEncoding(CharsetConstant.GBK_STR);
             writer = response.getWriter();
             writer.write(JSON.toJSONString(json));
 

@@ -62,7 +62,7 @@ public class BusiSupportCacheService implements IBusiSupportCacheService {
     public String updCommSysParaValue(String paraCode, String paraValue) {
         CommSysPara para = new CommSysPara();
         para.setSysParaValue(paraValue);
-        para.setSys0UpdTime(new Date());
+        para.setSysUpdTime(new Date());
         CommSysParaExample example = new CommSysParaExample();
         example.createCriteria().andSysParaCodeEqualTo(paraCode);
         commSysParaMapper.updateByExampleSelective(para, example);
@@ -101,7 +101,7 @@ public class BusiSupportCacheService implements IBusiSupportCacheService {
     public String updOmsCommSysParaValue(String paraCode, String paraValue) {
         OmsCommSysPara para = new OmsCommSysPara();
         para.setSysParaValue(paraValue);
-        para.setSys0UpdTime(new Date());
+        para.setSysUpdTime(new Date());
         OmsCommSysParaExample example = new OmsCommSysParaExample();
         example.createCriteria().andSysParaCodeEqualTo(paraCode);
         omsCommSysParaMapper.updateByExampleSelective(para, example);
