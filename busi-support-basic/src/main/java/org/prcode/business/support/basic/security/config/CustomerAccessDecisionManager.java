@@ -8,6 +8,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,11 +21,8 @@ import java.util.List;
  */
 public class CustomerAccessDecisionManager implements AccessDecisionManager {
 
-    private ISecurityService securityService;
-
-    public CustomerAccessDecisionManager(ISecurityService securityService) {
+    public CustomerAccessDecisionManager() {
         super();
-        this.securityService = securityService;
     }
 
     @Override
@@ -37,11 +35,9 @@ public class CustomerAccessDecisionManager implements AccessDecisionManager {
         //遍历需要的角色，如果一样，则通过
         for (ConfigAttribute configAttribute : collection) {
             needRole = configAttribute.getAttribute();
-            //user roles
-            CustomerUserDetail userDetail = (CustomerUserDetail)authentication.getPrincipal();
-            List<Role> roleList = securityService.getUserRoleList(userDetail.getUsername(), userDetail.getAccountType());
-            for (Role role : roleList) {
-                if (needRole.equals(role.getRoleCode())) {
+            for (GrantedAuthority ga : authentication.getAuthorities()) {
+                // ga is user's role.
+                if (needRole.equals(ga.getAuthority())) {
                     return;
                 }
             }
