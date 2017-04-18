@@ -1,16 +1,16 @@
 package org.prcode.business.support.basic.security.config;
 
 import org.prcode.business.basedomain.role.domain.Role;
-import org.prcode.business.support.basic.security.dao.SecurityDao;
 import org.prcode.business.support.basic.security.domain.CustomerUserDetail;
+import org.prcode.business.support.basic.security.service.ISecurityService;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @ClassName: CustomerAccessDecisionManager
@@ -20,11 +20,11 @@ import java.util.Collection;
  */
 public class CustomerAccessDecisionManager implements AccessDecisionManager {
 
-    private SecurityDao securityDao;
+    private ISecurityService securityService;
 
-    public CustomerAccessDecisionManager(SecurityDao securityDao) {
+    public CustomerAccessDecisionManager(ISecurityService securityService) {
         super();
-        this.securityDao = securityDao;
+        this.securityService = securityService;
     }
 
     @Override
@@ -39,8 +39,8 @@ public class CustomerAccessDecisionManager implements AccessDecisionManager {
             needRole = configAttribute.getAttribute();
             //user roles
             CustomerUserDetail userDetail = (CustomerUserDetail)authentication.getPrincipal();
-            userDetail = securityDao.getUserDetailByName(userDetail.getUsername(), userDetail.getAccountType());
-            for (Role role : userDetail.getRoles()) {
+            List<Role> roleList = securityService.getUserRoleList(userDetail.getUsername(), userDetail.getAccountType());
+            for (Role role : roleList) {
                 if (needRole.equals(role.getRoleCode())) {
                     return;
                 }

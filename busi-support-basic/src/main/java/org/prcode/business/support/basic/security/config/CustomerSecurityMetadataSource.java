@@ -2,8 +2,8 @@ package org.prcode.business.support.basic.security.config;
 
 import org.apache.log4j.Logger;
 import org.prcode.business.basedomain.role.domain.Role;
-import org.prcode.business.support.basic.security.dao.SecurityDao;
 import org.prcode.business.support.basic.security.domain.CustomerUrlRoles;
+import org.prcode.business.support.basic.security.service.ISecurityService;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
@@ -25,16 +25,16 @@ public class CustomerSecurityMetadataSource implements FilterInvocationSecurityM
     private Map<String, Collection<ConfigAttribute>> resourceMap = null;
     private PathMatcher pathMatcher = new AntPathMatcher();
 
-    private SecurityDao securityDao;
+    private ISecurityService securityService;
 
-    public CustomerSecurityMetadataSource(SecurityDao securityDao) {
+    public CustomerSecurityMetadataSource(ISecurityService securityService) {
         super();
-        this.securityDao = securityDao;
+        this.securityService = securityService;
         resourceMap = loadResourceMatchAuthority();
     }
 
     private Map<String, Collection<ConfigAttribute>> loadResourceMatchAuthority() {
-        List<CustomerUrlRoles> urlRoles = securityDao.getUrlRoles();
+        List<CustomerUrlRoles> urlRoles = securityService.getUrlRoles();
         Map<String, Collection<ConfigAttribute>> map = new HashMap<>();
         if (urlRoles != null && !urlRoles.isEmpty()) {
             for (CustomerUrlRoles urlRole : urlRoles) {

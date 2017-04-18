@@ -22,6 +22,8 @@ public class MessageConverterConfig {
 
     @Resource
     private ObjectMapper objectMapper;
+    @Resource
+    private RedisConnectionFactory redisConnectionFactory;
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -38,19 +40,26 @@ public class MessageConverterConfig {
     }
 
     @Bean
-    public RedisTemplate<?, ?> redisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, Object> template = new RedisTemplate<String, Object>();
-        template.setConnectionFactory(connectionFactory);
+    public RedisTemplate<?, ?> redisTemplate() {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory);
         setMySerializer(template);
         template.afterPropertiesSet();
         return template;
+    }
+
+    @Bean
+    public CustomerRedisCacheManager cacheManager() {
+        CustomerRedisCacheManager redisCacheManager = new CustomerRedisCacheManager(redisTemplate());
+        redisCacheManager.setUsePrefix(true);
+        return redisCacheManager;
     }
 
     /**
      * 设置序列化方法
      */
     private void setMySerializer(RedisTemplate<String, Object> template) {
-        Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<Object>(Object.class);
+        Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
         jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
         template.setKeySerializer(template.getStringSerializer());
         template.setValueSerializer(jackson2JsonRedisSerializer);
